@@ -1,22 +1,30 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
+import Clubs from '../views/Clubs.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home,
+    name: 'Clubs',
+    component: Clubs,
   },
   {
-    path: '/about',
-    name: 'About',
+    path: '/groups',
+    name: 'Groups',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    component: () => import(/* webpackChunkName: "groups" */ '../views/Groups.vue'),
+  },
+  {
+    path: '/schedule',
+    name: 'Schedule',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "schedule" */ '../views/Schedule.vue'),
   },
 ];
 
