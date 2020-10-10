@@ -1,29 +1,132 @@
 <template>
-  <div class="clubs">
+<div class="clubs-container">
+  <form class="club-form mb-4">
+      <div class="form-group">
+        <label for="nameInput">Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="nameInput"
+          aria-describedby="nameHelp"
+          v-model="clubName"
+        />
+        <small id="nameHelp" class="form-text text-muted">
+          Please enter the club name.
+        </small>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">City</label>
+        <input
+          type="text"
+          class="form-control"
+          id="cityInput"
+          aria-describedby="cityHelp"
+          v-model="clubCity"
+        />
+        <small id="cityHelp" class="form-text text-muted">
+          Please enter the club's city.
+        </small>
+      </div>
+      <button type="submit" @click.prevent="createClub" class="btn btn-success">Create Club</button>
+    </form>
+    <div class="clubs">
     <div style="display:flex">
       <div div class="card mr-2" style="width: 18rem;" v-for="club in clubs" :key="club.id">
         <div class="card-body">
           <h5 class="card-title">{{club.name}}</h5>
           <p class="card-text">{{club.city}}</p>
-          <a href="#" class="btn btn-primary">Bearbeiten</a>
+          <button @click.prevent="toggleCreateGroupForm(club.id)" class="btn btn-primary">
+            New Group
+          </button>
+          <button @click.prevent="deleteClub(club.id)" class="btn btn-danger float-right">
+            Delete
+          </button>
+          <form class="add-group-to-club-form mt-2" v-if="club.id === createGroupClubId">
+            <hr>
+            <label for="nameInput">Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="nameInput"
+              v-model="createGroupName"
+            />
+            <label for="nameInput">Kategorie</label>
+            <input
+              type="text"
+              class="form-control"
+              id="nameInput"
+              v-model="createGroupClass"
+            />
+            <button type="submit" @click.prevent="createGroup" class="btn btn-success mt-2">
+              Create Group
+            </button>
+          </form>
         </div>
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script>
+import axios from 'axios';
 
 export default {
   name: 'Clubs',
   data() {
     return {
       clubs: [],
+      clubName: '',
+      clubCity: '',
+      createGroupName: '',
+      createGroupClass: '',
+      createGroupClubId: '',
     };
   },
   async mounted() {
-    const response = await fetch('http://localhost:8080/clubs');
-    this.clubs = await response.json();
+    try {
+      const response = await axios.get('http://localhost:8080/clubs');
+      this.clubs = await response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  methods: {
+    async createClub() {
+      const createResponse = await axios.post('http://localhost:8080/clubs', {
+        name: this.clubName,
+        city: this.clubCity,
+      });
+      if (createResponse.status === 201) {
+        const { data } = await axios.get('http://localhost:8080/clubs');
+        this.clubs = data;
+      }
+    },
+    async createGroup() {
+      await axios.post('http://localhost:8080/groups', {
+        name: this.createGroupName,
+        classification: {
+          id: this.createGroupClass,
+        },
+        club: {
+          id: this.createGroupClubId,
+        },
+      });
+      this.toggleCreateGroupForm(this.createGroupClubId);
+    },
+    async deleteClub(id) {
+      const deleteResponse = await axios.delete(`http://localhost:8080/clubs/${id}`);
+      if (deleteResponse.status === 200) {
+        const { data } = await axios.get('http://localhost:8080/clubs');
+        this.clubs = data;
+      }
+      console.log({ id });
+    },
+    toggleCreateGroupForm(id) {
+      this.createGroupClubId = this.createGroupClubId !== id ? id : '';
+      this.createGroupName = '';
+      this.createGroupClass = '';
+    },
   },
 };
 </script>

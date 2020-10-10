@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 
 export default {
   name: 'Schedule',
@@ -55,19 +56,19 @@ export default {
     };
   },
   async mounted() {
-    const response = await fetch('http://localhost:8080/groups');
-    this.groups = await response.json();
+    const { data } = await axios.get('http://localhost:8080/groups');
+    this.groups = data;
   },
   computed: {
     sortedGroups() {
       let sortedGroups = [...this.groups].sort((a, b) => a.time > b.time);
-      sortedGroups = sortedGroups.filter((group) => group.classification.id === this.filter || this.filter === '');
+      sortedGroups = sortedGroups.filter((group) => group.classification !== null && (group.classification.id === this.filter || this.filter === ''));
       return sortedGroups;
     },
     classifications() {
       let classes = [];
       this.groups.forEach((group) => {
-        if (group.classification != null
+        if (group.classification !== null
             && group.classification !== undefined
             && group.classification.id !== undefined) {
           classes[group.classification.id] = group.classification;
