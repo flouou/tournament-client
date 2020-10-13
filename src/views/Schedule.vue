@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import GroupService from '@/services/group.service';
 
 export default {
   name: 'Schedule',
@@ -56,7 +56,7 @@ export default {
     };
   },
   async mounted() {
-    const { data } = await axios.get('http://localhost:8080/groups');
+    const { data } = await GroupService.getAllGroups();
     this.groups = data;
   },
   computed: {

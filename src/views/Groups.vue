@@ -22,8 +22,12 @@
 </template>
 
 <script>
-import axios from 'axios';
-
+// import axios from 'axios';
+import GroupService from '@/services/group.service';
+// tmp workaround
+/* axios.defaults.headers.common.Authorization =
+'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0IiwiZXhwIjoxNjAzNDA0NDY3fQ.
+bd79MZ1rJeS6totssWsTLprDY6rIMJqRVghm4-oxJp4NpHYYiD4YkjVdZ25JqwLas2weVnqen817KK_Tdt6SCg'; */
 export default {
   name: 'Groups',
   data() {
@@ -32,7 +36,7 @@ export default {
     };
   },
   async mounted() {
-    const { data } = await axios.get('http://localhost:8080/groups');
+    const { data } = await GroupService.getAllGroups();
     this.groups = data;
   },
   methods: {

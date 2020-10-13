@@ -69,7 +69,8 @@
 </template>
 
 <script>
-import axios from 'axios';
+import GroupService from '@/services/group.service';
+import ClubService from '@/services/club.service';
 
 export default {
   name: 'Clubs',
@@ -85,7 +86,7 @@ export default {
   },
   async mounted() {
     try {
-      const response = await axios.get('http://localhost:8080/clubs');
+      const response = await ClubService.getAllClubs();
       this.clubs = await response.data;
     } catch (error) {
       console.error(error);
@@ -93,34 +94,24 @@ export default {
   },
   methods: {
     async createClub() {
-      const createResponse = await axios.post('http://localhost:8080/clubs', {
-        name: this.clubName,
-        city: this.clubCity,
-      });
+      const createResponse = await ClubService.createClub(this.clubName, this.clubCity);
+      console.log(createResponse);
       if (createResponse.status === 201) {
-        const { data } = await axios.get('http://localhost:8080/clubs');
+        const { data } = await ClubService.getAllClubs();
         this.clubs = data;
       }
     },
     async createGroup() {
-      await axios.post('http://localhost:8080/groups', {
-        name: this.createGroupName,
-        classification: {
-          id: this.createGroupClass,
-        },
-        club: {
-          id: this.createGroupClubId,
-        },
-      });
+      await GroupService
+        .createGroup(this.createGroupName, this.createGroupClass, this.createGroupClubId);
       this.toggleCreateGroupForm(this.createGroupClubId);
     },
     async deleteClub(id) {
-      const deleteResponse = await axios.delete(`http://localhost:8080/clubs/${id}`);
+      const deleteResponse = await ClubService.deleteClub(id);
       if (deleteResponse.status === 200) {
-        const { data } = await axios.get('http://localhost:8080/clubs');
+        const { data } = await ClubService.getAllClubs();
         this.clubs = data;
       }
-      console.log({ id });
     },
     toggleCreateGroupForm(id) {
       this.createGroupClubId = this.createGroupClubId !== id ? id : '';
