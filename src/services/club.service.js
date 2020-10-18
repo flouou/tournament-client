@@ -2,11 +2,19 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 
-const API_URL = 'http://localhost:8080/';
+const API_URL = process.env.VUE_APP_API_URL;
 
 class ClubService {
   getAllClubs() {
     return axios.get(`${API_URL}clubs`, { headers: authHeader() });
+  }
+
+  getClub(id) {
+    return axios.get(`${API_URL}clubs/${id}`, { headers: authHeader() });
+  }
+
+  getGroupsForClub(id) {
+    return axios.get(`${API_URL}clubs/${id}/groups`, { headers: authHeader() });
   }
 
   createClub(name, city) {

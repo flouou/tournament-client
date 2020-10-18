@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/';
+const API_URL = process.env.VUE_APP_API_URL;
 
 class AuthService {
   // eslint-disable-next-line class-methods-use-this
@@ -12,7 +12,6 @@ class AuthService {
       if (response.data.Authorization) {
         localStorage.setItem('user', response.data.Authorization);
       }
-      console.log('authmodule', response);
       return response;
     });
   }

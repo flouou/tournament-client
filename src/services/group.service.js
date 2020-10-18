@@ -2,7 +2,7 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 
-const API_URL = 'http://localhost:8080/';
+const API_URL = process.env.VUE_APP_API_URL;
 
 class GroupService {
   getAllGroups() {
@@ -14,6 +14,18 @@ class GroupService {
       name,
       classification: { id: classId },
       club: { id: clubId },
+    }, { headers: authHeader() });
+  }
+
+  updateTime(groupId, time) {
+    return axios.post(`${API_URL}groups/${groupId}/time`, {
+      time,
+    }, { headers: authHeader() });
+  }
+
+  updateRating(groupId, ratings) {
+    return axios.post(`${API_URL}groups/${groupId}/rating`, {
+      ratings,
     }, { headers: authHeader() });
   }
 }

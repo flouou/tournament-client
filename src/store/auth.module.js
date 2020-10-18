@@ -13,7 +13,6 @@ export default {
     login({ commit }, user) {
       return AuthService.login(user).then(
         (token) => {
-          console.log(token);
           commit('loginSuccess', token);
           return Promise.resolve(token);
         },
