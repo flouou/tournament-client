@@ -1,69 +1,72 @@
 <template>
   <div class="schedule">
     <div class="text-right">
-      <button type="button"
-              class="btn btn-primary ml-2 mb-2"
+      <b-button :variant="filter === '' ? 'info' : 'primary'"
+              class="ml-2 mb-2"
               @click="filterTable('')">
                 All
-      </button>
-      <button type="button"
-              class="btn btn-primary ml-2 mb-2"
+      </b-button>
+      <b-button :variant="filter === classification.id ? 'info' : 'primary'"
+              class="ml-2 mb-2"
               v-for="classification in classifications"
               :key="classification.id"
               @click="filterTable(classification.id)">
                 {{classification.name}}
-      </button>
+      </b-button>
     </div>
-    <table class="table table-sm">
-      <thead>
-        <tr>
-          <th scope="col">Time</th>
-          <th scope="col">Group</th>
-          <th scope="col">Club</th>
-          <th scope="col">Category</th>
-          <th scope="col">Rating</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="group in sortedGroups" :key="group.id">
-          <th class="time" @click="editTime(group.id)">
-            <span v-if="showTimeInputId !== group.id">{{formatTime(group.time)}}</span>
-            <div v-if="showTimeInputId === group.id">
-              <input
-                type="time"
-                :value="formatTime(group.time)"
-                :id="`time-input-${group.id}`"/>
-              <font-awesome-icon
-                class="check-icon ml-2"
-                icon="check"
-                @click.stop="updateTime(group.id)"/>
-            </div>
-          </th>
-          <td>{{group.name}}</td>
-          <td>{{group.club.name}}</td>
-          <td>{{group.classification.name}}</td>
-          <td @click="editRating(group.id)">
-            <span v-if="showRatingInputId !== group.id">{{ formatRating(group.showRating) }}</span>
-            <div v-if="showRatingInputId === group.id">
-              <input
-                v-for="n in jurorCount"
-                :class="`rating-input mr-2 rating-input-${group.id}`"
-                type="number"
-                step=".1"
-                :key="n"/>
-              <font-awesome-icon
-                class="check-icon ml-2"
-                icon="check"
-                @click.stop="updateRating(group.id)"/>
-              <font-awesome-icon
-                class="x-icon ml-2"
-                icon="times"
-                @click.stop="resetRating()"/>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <b-pagination
+      v-model="currentPage"
+      :total-rows="rowCount"
+      :per-page="perPage"
+      aria-controls="schedule-table"
+    ></b-pagination>
+    <b-table
+      id="schedule-table"
+      :items="sortedGroups"
+      :fields="fields"
+      responsive
+      :per-page="perPage"
+      :current-page="currentPage">
+      <template v-slot:cell(time)="group">
+        <div @click="editTime(group.item.id)">
+          <span v-if="showTimeInputId !== group.item.id">{{formatTime(group.item.time)}}</span>
+          <div v-if="showTimeInputId === group.item.id">
+            <b-input
+              type="time"
+              :value="formatTime(group.item.time)"
+              :id="`time-input-${group.item.id}`"/>
+            <font-awesome-icon
+              class="check-icon ml-2"
+              icon="check"
+              @click.stop="updateTime(group.item.id)"/>
+          </div>
+        </div>
+      </template>
+
+      <template v-slot:cell(showRating)="group">
+        <div @click="editRating(group.item.id)">
+          <span v-if="showRatingInputId !== group.item.id">
+            {{ formatRating(group.item.showRating) }}
+          </span>
+          <div v-if="showRatingInputId === group.item.id">
+            <b-input
+              v-for="n in jurorCount"
+              :class="`rating-input mr-2 rating-input-${group.item.id}`"
+              type="number"
+              step=".1"
+              :key="n"/>
+            <font-awesome-icon
+              class="check-icon ml-2"
+              icon="check"
+              @click.stop="updateRating(group.item.id)"/>
+            <font-awesome-icon
+              class="x-icon ml-3"
+              icon="times"
+              @click.stop="resetRating()"/>
+          </div>
+        </div>
+      </template>
+    </b-table>
   </div>
 </template>
 
@@ -76,12 +79,21 @@ export default {
   name: 'Schedule',
   data() {
     return {
+      currentPage: '1',
+      perPage: '10',
       groups: [],
       classifications: [],
       filter: '',
       showTimeInputId: '',
       showRatingInputId: '',
       jurorCount: 0,
+      fields: [
+        { key: 'time', label: 'Time', sortable: true },
+        { key: 'name', label: 'Group', stickyColumn: true },
+        { key: 'club.name', label: 'Club' },
+        { key: 'classification.name', label: 'Category' },
+        { key: 'showRating', label: 'Rating', sortable: true },
+      ],
     };
   },
   async mounted() {
@@ -111,6 +123,9 @@ export default {
       sortedGroups = sortedGroups.filter((group) => group.classification !== null && (group.classification.id === this.filter || this.filter === ''));
       return sortedGroups;
     },
+    rowCount() {
+      return this.sortedGroups.length;
+    },
   },
   methods: {
     filterTable(classId) {
@@ -125,13 +140,13 @@ export default {
         });
         return sum;
       }
-      return '';
+      return 0;
     },
     formatTime(time) {
       if (time) {
         return time.slice(0, 5);
       }
-      return '';
+      return '00:00';
     },
     editTime(groupId) {
       this.showTimeInputId = groupId;

@@ -1,38 +1,36 @@
 <template>
   <div class="col-md-12">
-    <div class="card card-container">
+    <b-card>
       <validation-observer v-slot="{ invalid }">
-        <form name="form" @submit.prevent="handleLogin">
-          <div class="form-group">
-            <label for="username">Username</label>
+        <b-form name="form" @submit.prevent="handleLogin">
+          <b-form-group label="Username" label-for="username">
             <validation-provider rules="required" v-slot="{ errors }">
-              <input
+              <b-form-input
               v-model="user.username"
-              type="text"
-              class="form-control"
-              name="username"
+              id="username"
+              autocomplete="username"
             />
             <span>{{ errors[0] }}</span>
             </validation-provider>
-          </div>
-          <div class="form-group">
-            <label for="password">Password</label>
+          </b-form-group>
+          <b-form-group label="Password" label-for="password">
             <validation-provider rules="required" v-slot="{ errors }">
-              <input
+              <b-form-input
               v-model="user.password"
               type="password"
               class="form-control"
-              name="password"
+              id="password"
+              autocomplete="current-password"
             />
             <span>{{ errors[0] }}</span>
             </validation-provider>
-          </div>
-          <div class="form-group">
-            <button class="btn btn-primary btn-block" :disabled="invalid">
+          </b-form-group>
+          <b-form-group>
+            <b-button variant="primary" block type="submit" :disabled="invalid">
               Login
-            </button>
-          </div>
-        </form>
+            </b-button>
+          </b-form-group>
+        </b-form>
       </validation-observer>
       <div class="alert alert-danger alert-dismissible" role="alert" v-if="message">
         {{message}}
@@ -40,7 +38,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-    </div>
+    </b-card>
   </div>
 </template>
 

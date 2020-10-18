@@ -1,59 +1,62 @@
 <template>
   <div class="container">
     <h1>Settings</h1>
-    <form class="mt-4">
-      <div class="row">
-        <div class="form-group col-md-6">
-          <label for="inputNumberJury">Number of Jurors</label>
-          <input
+    <b-form class="mt-4">
+      <b-row>
+        <b-col md="6" class="form-group col-md-6">
+          <b-form-group label="Number of Jurors" label-for="inputNumberJury">
+            <b-input
             type="number"
             class="form-control"
             id="inputNumberJury"
             @blur="setNumberJurors"
-            v-model="settings.jurorCount">
-        </div>
-      </div>
-      <h3>Classifications</h3>
-      <div class="row">
-        <div class="form-group col-md-4">
-          <label for="inputNumberJury">Name</label>
-          <input
-            type="text"
+            v-model="settings.jurorCount"/>
+          </b-form-group>
+        </b-col>
+      </b-row>
+      <h3>Categories</h3>
+      <b-row>
+        <b-col md="4">
+          <b-form-group label="Name" label-for="inputClassificationName">
+            <b-form-input
             class="form-control"
             id="inputClassificationName"
-            v-model="newClassificationName">
-        </div>
-        <div class="form-group col-md-4">
-          <label for="inputNumberJury">Description</label>
-          <input
-            type="text"
-            class="form-control"
-            id="inputClassificationDescription"
-            v-model="newClassificationDescription">
-        </div>
-        <div class="form-group col-md-2 d-flex align-items-end">
-          <font-awesome-icon
-            icon="plus"
-            class="check-icon text-primary"
-            @click="addClassification()"/>
-        </div>
-      </div>
-      <ul class="list-group">
-        <li
-          class="list-group-item"
+            v-model="newClassificationName"/>
+          </b-form-group>
+        </b-col>
+        <b-col md="4">
+          <b-form-group label="Description" label-for="inputClassificationDescription">
+            <b-form-input
+              type="text"
+              class="form-control"
+              id="inputClassificationDescription"
+              v-model="newClassificationDescription"/>
+          </b-form-group>
+        </b-col>
+        <b-col md="2" class="d-flex align-items-end" style="justify-content: center;">
+          <b-form-group>
+            <font-awesome-icon
+              icon="plus"
+              class="check-icon text-primary"
+              @click="addClassification()"/>
+          </b-form-group>
+        </b-col>
+      </b-row>
+      <b-list-group>
+        <b-list-group-item
           v-for="classification in classifications"
           :key="classification.id">
-          <div class="row">
-            <div class="col-6">
+          <b-row>
+            <b-col cols="6">
               {{classification.name}}
-            </div>
-            <div class="col-6 text-center">
+            </b-col>
+            <b-col cols="6" class="text-center">
               {{classification.name}}
-            </div>
-          </div>
-        </li>
-      </ul>
-    </form>
+            </b-col>
+          </b-row>
+        </b-list-group-item>
+      </b-list-group>
+    </b-form>
   </div>
 </template>
 

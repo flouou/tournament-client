@@ -1,26 +1,11 @@
 <template>
-  <div class="modal" tabindex="-1" id="deleteModal">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">{{ deleteTitle }}</h5>
-        </div>
-        <div class="modal-body">
-          <p>{{ deleteMessage }}</p>
-        </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            @click="closeDialog">Close</button>
-          <button
-            type="button"
-            class="btn btn-primary"
-            @click="confirmDelete">Confirm</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <b-modal
+    id="deleteModal"
+    :title="deleteTitle"
+    @ok="confirmDelete"
+    @cancel="closeDialog">
+    <p>{{ deleteMessage }}</p>
+  </b-modal>
 </template>
 
 <script>
@@ -37,7 +22,7 @@ export default {
     },
   },
   mounted() {
-    document.querySelector('#deleteModal').style.display = 'block';
+    this.$bvModal.show('deleteModal');
   },
   methods: {
     confirmDelete() {

@@ -2,48 +2,38 @@
   <div>
     <h1>{{club.name}}</h1>
     <h3>{{club.city}}</h3>
-    <button class="btn btn-primary my-4" @click="toggleCreateGroupForm">
+    <b-button variant="primary" class="my-4" @click="toggleCreateGroupForm">
       {{showCreateGroupForm ? 'Hide' : 'New Group'}}
-    </button>
+    </b-button>
     <validation-observer  v-slot="{ invalid }">
-      <form class="club-form mb-4" v-if="showCreateGroupForm">
-        <div class="form-group">
-          <label for="nameInput">Group name</label>
+      <b-form class="club-form mb-4" v-if="showCreateGroupForm">
+        <b-form-group
+          label="Group name"
+          label-for="nameInput"
+          description="Please enter the group name.">
           <validation-provider rules="required" v-slot="{ errors }">
-          <input
-            type="text"
-            class="form-control"
+          <b-form-input
             id="nameInput"
             aria-describedby="nameHelp"
             v-model="newGroupName"
           />
           <small>{{ errors[0] }}</small>
           </validation-provider>
-          <small id="nameHelp" class="form-text text-muted">
-            Please enter the group name.
-          </small>
-        </div>
-        <div class="form-group">
-          <label for="classInput">Classification</label>
+        </b-form-group>
+        <b-form-group
+          label="Category"
+          label-for="classInput"
+          description="Please enter the group's category.">
           <validation-provider rules="required" v-slot="{ errors }">
-          <select
+          <b-form-select
             class="form-control"
             id="classInput"
-            aria-describedby="classHelp"
-            v-model="newGroupClass">
-            <option
-              v-for="classification in classifications"
-              :key="classification.id"
-              :value="classification.id">
-              {{classification.name}}
-            </option>
-          </select>
+            v-model="newGroupClass"
+            :options="formatClassOptions()">
+          </b-form-select>
           <small>{{ errors[0] }}</small>
           </validation-provider>
-          <small id="classHelp" class="form-text text-muted">
-            Please enter the group's classification.
-          </small>
-        </div>
+        </b-form-group>
         <button
           type="submit"
           @click.prevent="createGroup"
@@ -51,26 +41,26 @@
           :disabled="invalid">
           Create Group
         </button>
-      </form>
+      </b-form>
     </validation-observer>
-    <ul class="list-group">
-      <li class="list-group-item" v-for="group in groups" :key="group.id">
-        <div class="row">
-          <div class="col-4">
+    <b-list-group>
+      <b-list-group-item v-for="group in groups" :key="group.id">
+        <b-row>
+          <b-col cols="4">
             {{group.name}}
-          </div>
-          <div class="col-4 text-center">
+          </b-col>
+          <b-col cols="4" class="text-center">
             {{displayClassification(group.classification)}}
-          </div>
-          <div class="col-2 text-right">
+          </b-col>
+          <b-col cols="2" class="text-right">
             <span class="single-ratings mr-2">{{displaySingleRatings(group.showRating)}}</span>
-          </div>
-          <div class="col-2 text-right">
+          </b-col>
+          <b-col cols="2" class="text-right">
             <span class="final-rating text-primary">{{displayRating(group.showRating)}}</span>
-          </div>
-        </div>
-      </li>
-    </ul>
+          </b-col>
+        </b-row>
+      </b-list-group-item>
+    </b-list-group>
   </div>
 </template>
 
@@ -124,6 +114,16 @@ export default {
     },
     toggleCreateGroupForm() {
       this.showCreateGroupForm = !this.showCreateGroupForm;
+    },
+    formatClassOptions() {
+      const options = [];
+      this.classifications.forEach((classification) => {
+        const option = {};
+        option.value = classification.id;
+        option.text = classification.name;
+        options.push(option);
+      });
+      return options;
     },
   },
 };

@@ -1,60 +1,58 @@
 <template>
   <div class="clubs-container">
     <validation-observer v-slot="{ invalid }">
-      <form class="club-form mb-4">
-        <div class="form-group">
-          <label for="nameInput">Name</label>
+      <b-form class="club-form mb-4">
+        <b-form-group label="Name" label-for="nameInput" description="Please enter the club name.">
           <validation-provider rules="required" v-slot="{ errors }">
-          <input
+          <b-form-input
             type="text"
             class="form-control"
             id="nameInput"
-            aria-describedby="nameHelp"
             v-model="clubName"
           />
           <small>{{ errors[0] }}</small>
           </validation-provider>
-          <small id="nameHelp" class="form-text text-muted">
-            Please enter the club name.
-          </small>
-        </div>
-        <div class="form-group">
-          <label for="exampleInputPassword1">City</label>
+        </b-form-group>
+        <b-form-group label="City" label-for="cityInput" description="Please enter the club's city">
           <validation-provider rules="required" v-slot="{ errors }">
-          <input
+          <b-form-input
             type="text"
             class="form-control"
             id="cityInput"
-            aria-describedby="cityHelp"
             v-model="clubCity"
           />
           <small>{{ errors[0] }}</small>
           </validation-provider>
-          <small id="cityHelp" class="form-text text-muted">
-            Please enter the club's city.
-          </small>
-        </div>
-        <button
+        </b-form-group>
+        <b-button
+          variant="success"
           type="submit"
           @click.prevent="createClub"
-          class="btn btn-success" :disabled="invalid">Create Club</button>
-      </form>
+          :disabled="invalid">Create Club</b-button>
+      </b-form>
     </validation-observer>
     <div class="clubs">
-      <div div class="card mr-2 mb-2" style="width: 18rem;" v-for="club in clubs" :key="club.id">
-        <div class="card-body">
-          <h5 class="card-title">{{club.name}}</h5>
-          <p class="card-text">{{club.city}}</p>
-          <router-link
-            class="btn btn-primary"
-            :to="{ name: 'GroupDetails', params: { id: club.id }}">
-            Details
-          </router-link>
-          <button @click.prevent="displayDeleteModal(club.id)" class="btn btn-danger float-right">
-            Delete
-          </button>
-        </div>
-      </div>
+      <b-card
+        :title="club.name"
+        class="mr-2 mb-2"
+        style="width: 18rem;"
+        v-for="club in clubs"
+        :key="club.id">
+        <b-card-text>
+          {{club.city}}
+        </b-card-text>
+        <b-button
+          variant="primary"
+          :to="{ name: 'GroupDetails', params: { id: club.id }}">
+          Details
+        </b-button>
+        <b-button
+          @click.prevent="displayDeleteModal(club.id)"
+          variant="danger"
+          class="float-right">
+          Delete
+        </b-button>
+      </b-card>
     </div>
     <delete-modal
       :deleteTitle="deleteTitle"
@@ -100,7 +98,7 @@ export default {
         const { data } = await ClubService.getAllClubs();
         this.clubs = data;
         this.clubName = '';
-        this.ClubCity = '';
+        this.clubCity = '';
       }
     },
     displayDeleteModal(id) {

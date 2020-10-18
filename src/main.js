@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import './plugins/bootstrap-vue';
 import { ValidationProvider, ValidationObserver, extend } from 'vee-validate';
 import { required } from 'vee-validate/dist/rules';
 import { library } from '@fortawesome/fontawesome-svg-core';
